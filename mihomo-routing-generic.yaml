@@ -1,0 +1,163 @@
+# 通用 Mihomo / OpenClash 路由模板；适用于以中国大陆直连为默认的使用场景。
+# 这是路由片段，不是完整订阅；实际节点和名为 PROXY 的出站组由主配置提供。
+# 3X-UI v3.7.0 可通过 HTTPS 远程路由导入；保留其生成的 PROXY。
+# 不绑定节点名、地区、设备、IP 或机场；不包含认证、DNS、TUN 或监听配置。
+# 新配置无历史选择时：AI / Others / Microsoft / Apple / Steam 跟随 PROXY。
+# Domestic 默认 DIRECT；已有客户端的选择缓存可能覆盖默认值。
+# 公共规则集每日更新；主配置需要可用的 PROXY 和 GeoSite/GeoIP 数据。
+# 使用说明见仓库 README.md。
+proxy-groups:
+  - name: AI
+    type: select
+    proxies:
+      - PROXY
+      - DIRECT
+    include-all-proxies: true
+  - name: Domestic
+    type: select
+    proxies:
+      - DIRECT
+    include-all-proxies: true
+  - name: Others
+    type: select
+    proxies:
+      - PROXY
+      - DIRECT
+  - name: Microsoft
+    type: select
+    proxies:
+      - PROXY
+      - DIRECT
+  - name: Apple
+    type: select
+    proxies:
+      - PROXY
+      - DIRECT
+  - name: Steam
+    type: select
+    proxies:
+      - PROXY
+      - DIRECT
+rule-providers:
+  openai:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-openai.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/openai.yaml
+    interval: 86400
+    proxy: PROXY
+  youtube:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-youtube.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.yaml
+    interval: 86400
+    proxy: PROXY
+  google:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-google.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.yaml
+    interval: 86400
+    proxy: PROXY
+  github:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-github.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/github.yaml
+    interval: 86400
+    proxy: PROXY
+  telegram:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-telegram.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/telegram.yaml
+    interval: 86400
+    proxy: PROXY
+  telegram-ip:
+    type: http
+    behavior: ipcidr
+    format: yaml
+    path: ./rules/routing-generic-telegram-ip.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/telegram.yaml
+    interval: 86400
+    proxy: PROXY
+  microsoft-cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-microsoft-cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft@cn.yaml
+    interval: 86400
+    proxy: PROXY
+  apple-cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-apple-cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple@cn.yaml
+    interval: 86400
+    proxy: PROXY
+  steam-cn:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-steam-cn.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam@cn.yaml
+    interval: 86400
+    proxy: PROXY
+  microsoft:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-microsoft.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/microsoft.yaml
+    interval: 86400
+    proxy: PROXY
+  apple:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-apple.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/apple.yaml
+    interval: 86400
+    proxy: PROXY
+  steam:
+    type: http
+    behavior: domain
+    format: yaml
+    path: ./rules/routing-generic-steam.yaml
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/steam.yaml
+    interval: 86400
+    proxy: PROXY
+rules:
+  - GEOSITE,private,DIRECT
+  - GEOIP,private,DIRECT,no-resolve
+  - DOMAIN-SUFFIX,openai.com,AI
+  - DOMAIN-SUFFIX,chatgpt.com,AI
+  - DOMAIN-SUFFIX,oaistatic.com,AI
+  - DOMAIN-SUFFIX,oaiusercontent.com,AI
+  - RULE-SET,openai,AI
+  - RULE-SET,youtube,PROXY
+  - RULE-SET,google,PROXY
+  - RULE-SET,github,PROXY
+  - RULE-SET,telegram,PROXY
+  - RULE-SET,telegram-ip,PROXY,no-resolve
+  - DOMAIN,officecdn-microsoft-com.akamaized.net,DIRECT
+  - DOMAIN,swdownload.apple.com,DIRECT
+  - RULE-SET,microsoft-cn,DIRECT
+  - RULE-SET,apple-cn,DIRECT
+  - RULE-SET,steam-cn,DIRECT
+  - RULE-SET,microsoft,Microsoft
+  - RULE-SET,apple,Apple
+  - RULE-SET,steam,Steam
+  - DOMAIN-SUFFIX,paypal.com,PROXY
+  - DOMAIN-SUFFIX,paypalobjects.com,PROXY
+  - GEOSITE,cn,Domestic
+  - GEOIP,CN,Domestic,no-resolve
+  - MATCH,Others
